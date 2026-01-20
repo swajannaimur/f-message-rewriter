@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { RefreshCw, Copy, Check, Plus, Delete, Sparkle } from "lucide-react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 export default function Field() {
@@ -12,7 +13,7 @@ export default function Field() {
   const [update, setUpdate] = useState("");
   const [clientName, setClientName] = useState("");
   const [profileName, setProfileName] = useState("");
-  const [forbiddenWordsFound, setForbiddenWordsFound] = useState({}); // new state
+  const [forbiddenWordsFound, setForbiddenWordsFound] = useState({});
 
   const wordsToHyphenate = {
     email: "e-mail",
@@ -99,11 +100,10 @@ export default function Field() {
     });
 
     setRewrittenMessage(rewritten);
-    setForbiddenWordsFound(foundWords); // set the found words
+    setForbiddenWordsFound(foundWords);
     setCopied(false);
   };
 
-  // ✅ Clear All Function
   const clearAll = () => {
     setOriginalMessage("");
     setRewrittenMessage("");
@@ -132,7 +132,7 @@ export default function Field() {
   const generateProfessional = async () => {
     if (!originalMessage.trim()) return;
 
-    setLoading(true); // start loading
+    setLoading(true);
     try {
       const res = await fetch("/api/generate-professional", {
         method: "POST",
@@ -148,7 +148,7 @@ export default function Field() {
     } catch (err) {
       console.error("Error generating professional message:", err);
     } finally {
-      setLoading(false); // stop loading
+      setLoading(false);
     }
   };
 
@@ -157,7 +157,7 @@ export default function Field() {
       <div className="max-w-10/12 mx-auto">
         {/* Header */}
         <div className="text-center flex flex-col justify-center items-center gap-5 mb-10">
-          <Image src="/images/logo.png" alt="logo" width={225} height={225}/>
+          <Image src="/images/logo.png" alt="logo" width={225} height={225} />
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Fiverr Message with iLMify
           </h1>
@@ -169,7 +169,6 @@ export default function Field() {
 
         {/* Main Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
-          {/* Message Rewriter Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             {/* Original Message */}
             <div>
@@ -183,7 +182,6 @@ export default function Field() {
                 placeholder="Paste your message here..."
               />
 
-              {/* Buttons */}
               <div className="mt-4 flex gap-4">
                 <button
                   onClick={rewriteMessage}
@@ -200,33 +198,39 @@ export default function Field() {
                     loading ? "opacity-70 cursor-not-allowed" : ""
                   }`}
                 >
-                  {loading ? (
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8H4z"
-                      ></path>
-                    </svg>
-                  ) : (
-                    <>
-                      <Sparkle size={16} />
-                      Rewrite Professionally
-                    </>
-                  )}
+                  <motion.div
+                    animate={
+                      loading
+                        ? { rotate: 360, scale: [1, 1.25, 1] }
+                        : { rotate: 0, scale: 1 }
+                    }
+                    transition={
+                      loading
+                        ? {
+                            rotate: {
+                              repeat: Infinity,
+                              duration: 1.1,
+                              ease: "linear",
+                            },
+                            scale: {
+                              repeat: Infinity,
+                              duration: 1.1,
+                              ease: "easeInOut",
+                            },
+                          }
+                        : {
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }
+                    }
+                  >
+                    <Sparkle size={16} />
+                  </motion.div>
+
+                  <span>
+                    {loading ? "Generating..." : "Rewrite Professionally"}
+                  </span>
                 </button>
 
                 <button
@@ -271,7 +275,7 @@ export default function Field() {
                 )}
               </div>
 
-              {/* Forbidden Words Display */}
+              {/* Words Display */}
               {Object.keys(forbiddenWordsFound).length > 0 && (
                 <div className="mt-2 text-sm">
                   <div className="text-red-600  text-lg">
