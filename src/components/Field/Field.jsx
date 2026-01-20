@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { RefreshCw, Copy, Check, Plus, Delete, Sparkle } from "lucide-react";
+import Image from "next/image";
 
 export default function Field() {
   const [originalMessage, setOriginalMessage] = useState("");
@@ -73,6 +74,15 @@ export default function Field() {
     Canva: "crea-tive tools",
     GIMP: "de-sign soft-ware",
     Figma: "gra-phic de-sign",
+    Payoneer: "P-ay-oneer",
+    "Western Union": "International m-oney transfer",
+    "Pay me directly": "Alternative p-ay-ment options",
+    Crypto: "Cy-rpto",
+    "Let's talk on Zoom": "Let's talk on Zoom Call through the Fiverr feature",
+    "5-star": "Great comment",
+    "Good review": "Positive feedback",
+    "Positive feedback": "Excellent Experience",
+    Exchange: "Barter or trade services",
   };
 
   const rewriteMessage = () => {
@@ -144,14 +154,16 @@ export default function Field() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-10/12 mx-auto">
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center flex flex-col justify-center items-center gap-5 mb-10">
+          <Image src="/images/logo.png" alt="logo" width={225} height={225}/>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Fiverr Message Rewriter
+            Fiverr Message with iLMify
           </h1>
           <p className="text-gray-600">
-            Make your messages compliant with Fiverr's guidelines
+            You can upgrade your message format to the next level, making it
+            more modern, appealing, professional and User friendly
           </p>
         </div>
 
@@ -262,8 +274,8 @@ export default function Field() {
               {/* Forbidden Words Display */}
               {Object.keys(forbiddenWordsFound).length > 0 && (
                 <div className="mt-2 text-sm">
-                  <div className="text-red-600 font-bold">
-                    Words found:{" "}
+                  <div className="text-red-600  text-lg">
+                    Wrong Words:{" "}
                     {Object.values(forbiddenWordsFound).reduce(
                       (a, b) => a + b,
                       0,

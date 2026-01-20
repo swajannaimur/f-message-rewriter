@@ -18,8 +18,10 @@ export async function POST(req) {
     messages: [
       {
         role: "system",
-        content:
-          "Rewrite the following message in a professional tone suitable for Fiverr clients.",
+        content: `You are a professional writing assistant. 
+        Upgrade the user's message by replacing ordinary words with the **best possible synonyms**. 
+        **Do not change the sentence structure, order, or meaning**. 
+        Only replace words with more elegant, impressive, or refined alternatives.`,
       },
       { role: "user", content: message },
     ],
