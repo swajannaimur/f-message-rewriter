@@ -27,10 +27,10 @@ export default function Field() {
     gmail: "g-mail",
     yahoo: "ya-hoo",
     paypal: "Pay-Pal",
-    facebook: "Face-book",
-    instagram: "Insta-gram",
-    twitter: "Twit-ter",
-    linkedin: "Linked-In",
+    facebook: "face-book",
+    instagram: "insta-gram",
+    twitter: "twit-ter",
+    linkedin: "linked-In",
     pay: "p-ay",
     payment: "p-ay-ment",
   };
@@ -43,17 +43,17 @@ export default function Field() {
       rewritten = rewritten.replace(regex, value);
     });
 
-    rewritten = rewritten.replace(
-      /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/g,
-      "[e-mail address]",
-    );
+    // rewritten = rewritten.replace(
+    //   /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/g,
+    //   "[e-mail address]",
+    // );
 
-    rewritten = rewritten.replace(/(\+?\d[\d\s-]{7,}\d)/g, "[ph-one num-ber]");
+    // rewritten = rewritten.replace(/(\+?\d[\d\s-]{7,}\d)/g, "[ph-one num-ber]");
 
-    rewritten = rewritten.replace(
-      /(https?:\/\/[^\s]+|www\.[^\s]+)/g,
-      "[web-site link]",
-    );
+    // rewritten = rewritten.replace(
+    //   /(https?:\/\/[^\s]+|www\.[^\s]+)/g,
+    //   "[web-site link]",
+    // );
 
     setRewrittenMessage(rewritten);
     setCopied(false);
@@ -84,8 +84,28 @@ export default function Field() {
     setProfileName("");
   };
 
+//   const generateProfessional = async () => {
+//     if (!originalMessage.trim()) return;
+
+//     try {
+//       const res = await fetch("/api/generate-professional", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ message: originalMessage }),
+//       });
+
+//       const data = await res.json();
+//       if (data.professionalMessage) {
+//         setRewrittenMessage(data.professionalMessage);
+//         setCopied(false);
+//       }
+//     } catch (err) {
+//       console.error("Error generating professional message:", err);
+//     }
+//   };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
@@ -109,7 +129,7 @@ export default function Field() {
               <textarea
                 value={originalMessage}
                 onChange={(e) => setOriginalMessage(e.target.value)}
-                className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-black"
                 placeholder="Paste your message here..."
               />
 
@@ -122,6 +142,13 @@ export default function Field() {
                   <RefreshCw size={18} />
                   Rewrite Message
                 </button>
+
+                {/* <button
+                  onClick={generateProfessional}
+                  className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Generate Professionally
+                </button> */}
 
                 <button
                   onClick={clearAll}
@@ -142,7 +169,7 @@ export default function Field() {
                 <textarea
                   value={rewrittenMessage}
                   readOnly
-                  className="w-full h-64 p-4 border border-gray-300 rounded-lg bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full h-64 p-4 border border-gray-300 rounded-lg bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
                   placeholder="Rewritten message will appear here..."
                 />
                 {rewrittenMessage && (
@@ -157,8 +184,8 @@ export default function Field() {
                       </>
                     ) : (
                       <>
-                        <Copy size={16} />
-                        <span>Copy</span>
+                        <Copy size={16} color="black" />
+                        <span className="text-black">Copy</span>
                       </>
                     )}
                   </button>
@@ -181,19 +208,19 @@ export default function Field() {
                 value={update}
                 onChange={(e) => setUpdate(e.target.value)}
                 placeholder="Type"
-                className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
               <input
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="Client Name"
-                className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
               <input
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
                 placeholder="Profile Name"
-                className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
             </div>
 
