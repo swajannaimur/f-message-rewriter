@@ -1,9 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { RefreshCw, Copy, Check, Plus, Delete, Sparkle } from "lucide-react";
-import { motion } from "framer-motion";
+import {
+  RefreshCw,
+  Copy,
+  Check,
+  Plus,
+  Trash2,
+  Sparkles,
+  Sparkle,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Field() {
   const [originalMessage, setOriginalMessage] = useState("");
@@ -14,6 +22,7 @@ export default function Field() {
   const [clientName, setClientName] = useState("");
   const [profileName, setProfileName] = useState("");
   const [forbiddenWordsFound, setForbiddenWordsFound] = useState({});
+  const [error, setError] = useState("");
 
   const wordsToHyphenate = {
     email: "e-mail",
@@ -133,6 +142,8 @@ export default function Field() {
     if (!originalMessage.trim()) return;
 
     setLoading(true);
+    setError("");
+
     try {
       const res = await fetch("/api/generate-professional", {
         method: "POST",
@@ -141,133 +152,128 @@ export default function Field() {
       });
 
       const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
       if (data.professionalMessage) {
         setRewrittenMessage(data.professionalMessage);
         setCopied(false);
       }
     } catch (err) {
-      console.error("Error generating professional message:", err);
+      setError(err.message || "Failed to generate message");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-8">
-      <div className="max-w-10/12 mx-auto">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 p-3 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center flex flex-col justify-center items-center gap-5 mb-10">
-          <Image src="/images/logo.png" alt="logo" width={225} height={225} />
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="text-center flex flex-col justify-center items-center gap-2 mb-4 sm:mb-6 lg:mb-8 px-2">
+          <div className="w-28 sm:w-36 md:w-44 lg:w-52">
+            <Image
+              alt="logo"
+              src="/images/logo.png"
+              width={200}
+              height={200}
+              className="w-full h-auto object-contain"
+              sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, (max-width: 1024px) 176px, 208px"
+            />
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
             Fiverr Message with iLMify
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl px-4">
             You can upgrade your message format to the next level, making it
             more modern, appealing, professional and User friendly
           </p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6">
             {/* Original Message */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                 Original Message
               </label>
               <textarea
                 value={originalMessage}
                 onChange={(e) => setOriginalMessage(e.target.value)}
-                className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-black"
+                className="w-full h-48 sm:h-56 lg:h-64 p-3 sm:p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-black text-sm sm:text-base"
                 placeholder="Paste your message here..."
               />
 
-              <div className="mt-4 flex gap-4">
+              <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4">
                 <button
                   onClick={rewriteMessage}
-                  className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-2 py-3 rounded-lg font-medium transition-colors text-sm"
+                  className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg font-medium transition-colors text-xs sm:text-sm"
                 >
-                  <RefreshCw size={16} />
-                  Rewrite Message
+                  <RefreshCw size={16} className="shrink-0" />
+                  <span className="whitespace-nowrap">Rewrite Message</span>
                 </button>
 
                 <button
                   onClick={generateProfessional}
                   disabled={loading}
-                  className={`w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-3 rounded-lg font-medium transition-colors text-sm ${
+                  className={`w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg font-medium transition-colors text-xs sm:text-sm ${
                     loading ? "opacity-70 cursor-not-allowed" : ""
                   }`}
                 >
-                  <motion.div
-                    animate={
-                      loading
-                        ? { rotate: 360, scale: [1, 1.25, 1] }
-                        : { rotate: 0, scale: 1 }
-                    }
-                    transition={
-                      loading
-                        ? {
-                            rotate: {
-                              repeat: Infinity,
-                              duration: 1.1,
-                              ease: "linear",
-                            },
-                            scale: {
-                              repeat: Infinity,
-                              duration: 1.1,
-                              ease: "easeInOut",
-                            },
-                          }
-                        : {
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 20,
-                          }
-                    }
-                  >
-                    <Sparkle size={16} />
-                  </motion.div>
-
-                  <span>
+                  <Sparkle
+                    size={16}
+                    className={`shrink-0 ${loading ? "animate-spin" : ""}`}
+                  />
+                  <span className="whitespace-nowrap">
                     {loading ? "Generating..." : "Rewrite Professionally"}
                   </span>
                 </button>
 
                 <button
                   onClick={clearAll}
-                  className="w-full flex items-center justify-center gap-2 px-2 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors text-sm"
+                  className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors text-xs sm:text-sm"
                 >
-                  <Delete size={16} />
-                  Clear All
+                  <Trash2 size={16} className="shrink-0" />
+                  <span className="whitespace-nowrap">Clear All</span>
                 </button>
+                
               </div>
+              {error && (
+  <div className="mt-2 text-sm text-red-600 font-medium">
+    ⚠️ {error}
+  </div>
+)}
             </div>
 
             {/* Rewritten Message */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                 Rewritten Message (Fiverr Safe)
               </label>
               <div className="relative">
                 <textarea
                   value={rewrittenMessage}
                   readOnly
-                  className="w-full h-64 p-4 border border-gray-300 rounded-lg bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                  className="w-full h-48 sm:h-56 lg:h-64 p-3 sm:p-4 border border-gray-300 rounded-lg bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black text-sm sm:text-base"
                   placeholder="Rewritten message will appear here..."
                 />
                 {rewrittenMessage && (
                   <button
                     onClick={copyToClipboard}
-                    className="absolute top-3 right-3 bg-white hover:bg-gray-50 border border-gray-300 px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors shadow-sm"
+                    className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white hover:bg-gray-50 border border-gray-300 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-2 text-xs sm:text-sm font-medium transition-colors shadow-sm"
                   >
                     {copied ? (
                       <>
-                        <Check size={16} className="text-green-600" />
+                        <Check size={16} className="text-green-600 shrink-0" />
                         <span className="text-green-600">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy size={16} color="black" />
+                        <Copy size={16} className="text-black shrink-0" />
                         <span className="text-black">Copy</span>
                       </>
                     )}
@@ -277,18 +283,21 @@ export default function Field() {
 
               {/* Words Display */}
               {Object.keys(forbiddenWordsFound).length > 0 && (
-                <div className="mt-2 text-sm">
-                  <div className="text-red-600  text-lg">
+                <div className="mt-2 sm:mt-3 text-sm sm:text-base">
+                  <div className="text-red-600 font-semibold mb-1">
                     Wrong Words:{" "}
                     {Object.values(forbiddenWordsFound).reduce(
                       (a, b) => a + b,
                       0,
                     )}
                   </div>
-                  <div className="mb-1">
+                  <div className="flex flex-wrap gap-1">
                     {Object.entries(forbiddenWordsFound).map(
                       ([word, count]) => (
-                        <span key={word} className="text-red-600 mr-2 text-lg">
+                        <span
+                          key={word}
+                          className="text-red-600 text-sm sm:text-base"
+                        >
                           {word},
                         </span>
                       ),
@@ -300,44 +309,68 @@ export default function Field() {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-gray-200 my-8"></div>
+          <div className="border-t border-gray-200 my-6 sm:my-8"></div>
 
           {/* Metadata Section */}
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">
               Client Metadata
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
               <input
                 value={update}
                 onChange={(e) => setUpdate(e.target.value)}
                 placeholder="Type"
-                className="p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="p-2.5 sm:p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
               />
               <input
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="Client Name"
-                className="p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="p-2.5 sm:p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
               />
               <input
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
                 placeholder="Profile Name"
-                className="p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="p-2.5 sm:p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base sm:col-span-2 md:col-span-1"
               />
             </div>
 
             <button
               onClick={addToMessage}
-              className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-colors text-sm sm:text-base"
             >
-              <Plus size={18} />
+              <Plus size={18} className="shrink-0" />
               Add Entry
             </button>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className=" pt-4 sm:pt-6 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 px-4">
+          <span className="font-medium text-gray-700">Developed by</span>
+          <Link
+            href="https://www.linkedin.com/in/swajan-naimur/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium hover:text-green-600 transition-colors underline underline-offset-4"
+          >
+            Kazi Md Naimur Rahman
+          </Link>
+
+          <span className="hidden sm:inline text-gray-700">&amp;</span>
+
+          <Link
+            href="https://www.instagram.com/tufaelahmedzuarder/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium hover:text-green-600 transition-colors underline underline-offset-4"
+          >
+            Tufael Ahmed Zuarder
+          </Link>
+        </footer>
       </div>
     </div>
   );
